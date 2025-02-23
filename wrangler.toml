@@ -1,5 +1,6 @@
 workers_dev = true
-name = "my-worker"
+account_id = "2bcbef515e72375efa7e408eeb8d183a"
+name = "the-universes"
 compatibility_date = "2024-11-18"
 compatibility_flags = ["nodejs_compat"]
 main = "./build/server/index.js"
@@ -10,6 +11,6 @@ VALUE_FROM_CLOUDFLARE = "Hello from Cloudflare"
 
 [[d1_databases]]
 binding = "DB"
-database_name = "your-database-name"
-database_id = "your-database-id"
+database_name = "the-universes"
+database_id = "cbe00d7c-7e89-41f6-a132-662db9bec313"
 migrations_dir = "drizzle"

@@ -1,13 +1,14 @@
 import type { Config } from "drizzle-kit";
 
 export default {
-  out: "./drizzle",
-  schema: "./database/schema.ts",
+  dbCredentials: {
+    accountId: "2bcbef515e72375efa7e408eeb8d183a",
+    databaseId: "cbe00d7c-7e89-41f6-a132-662db9bec313",
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    token: process.env.CLOUDFLARE_API_TOKEN!,
+  },
   dialect: "sqlite",
   driver: "d1-http",
-  dbCredentials: {
-    databaseId: "your-database-id",
-    accountId: process.env.CLOUDFLARE_ACCOUNT_ID!,
-    token: process.env.CLOUDFLARE_TOKEN!,
-  },
+  out: "./drizzle",
+  schema: "./database/schema.ts",
 } satisfies Config;

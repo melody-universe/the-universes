@@ -1,18 +1,19 @@
 import type { ExecutionContext } from "@cloudflare/workers-types";
 import type { AppLoadContext } from "react-router";
 
-import { drizzle, type DrizzleD1Database } from "drizzle-orm/d1";
+// Leaving DB stuff in case we need it later.
+// import { drizzle, type DrizzleD1Database } from "drizzle-orm/d1";
 
-import * as schema from "./database/schema";
+// import * as schema from "./database/schema";
 
 export function getLoadContext({
   context,
 }: GetLoadContextArgs): AppLoadContext {
-  const db = drizzle(context.cloudflare.env.DB, { schema });
+  // const db = drizzle(context.cloudflare.env.DB, { schema });
 
   return {
     cloudflare: context.cloudflare,
-    db,
+    // db,
   };
 }
 
@@ -25,7 +26,7 @@ declare module "react-router" {
       ctx: Omit<ExecutionContext, "props">;
       env: CloudflareEnvironment;
     };
-    db: DrizzleD1Database<typeof schema>;
+    // db: DrizzleD1Database<typeof schema>;
   }
 }
 

@@ -1,7 +1,5 @@
 import type { ReactNode } from "react";
 
-import ukeChaos from "./uke-chaos.jpg";
-
 export function Welcome(): ReactNode {
   return (
     <main className="flex items-center justify-center pt-6 pb-4">
@@ -9,9 +7,6 @@ export function Welcome(): ReactNode {
         <header className="flex flex-col items-center gap-9 text-4xl">
           The Universes
         </header>
-        <div className="w-full px-4">
-          <img src={ukeChaos} />
-        </div>
       </div>
     </main>
   );

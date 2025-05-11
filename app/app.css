@@ -9,8 +9,13 @@
 html,
 body {
   @apply bg-white dark:bg-gray-950;
+  background-image:
+    linear-gradient(to right, #fffb, #fffb), url(/uke-chaos.jpg);
+  background-size: cover;
 
   @media (prefers-color-scheme: dark) {
+    background-image:
+      linear-gradient(to right, #030712e0, #030712e0), url(/uke-chaos.jpg);
     color-scheme: dark;
   }
 }

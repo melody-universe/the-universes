@@ -13,14 +13,17 @@ import {
 
 import type { Route } from "./+types/home";
 
-export default function Home({ loaderData }: Route.ComponentProps): ReactNode {
+export default function Home({
+  actionData,
+  loaderData,
+}: Route.ComponentProps): ReactNode {
   return (
     <main className="flex items-center justify-center pt-6 pb-4">
       <div className="flex min-h-0 flex-1 flex-col items-center gap-8">
         <header className="flex flex-col items-center gap-9 text-4xl">
           The Universes
         </header>
-        {loaderData.isNewInstance && <NewInstanceForm />}
+        {actionData ?? (loaderData.isNewInstance && <NewInstanceForm />)}
       </div>
     </main>
   );
@@ -35,6 +38,10 @@ export function meta(_: Route.MetaArgs): Route.MetaDescriptors {
 
 export async function loader({ context }: Route.LoaderArgs) {
   return { isNewInstance: await usersApi(context).isNewInstance() };
+}
+
+export function action(_: Route.ActionArgs) {
+  return "Sorry, working on it!";
 }
 
 function NewInstanceForm(): ReactNode {

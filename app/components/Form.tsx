@@ -56,7 +56,7 @@ export function FieldControl({ required, type }: FieldControlProps): ReactNode {
     <RadixForm.Control asChild>
       <input
         className={[
-          "inline-flex h-9 w-full items-center justify-center rounded-b-sm pr-2.5 pl-2.5 text-lg shadow-xs",
+          "inline-flex h-9 w-full items-center justify-center rounded-sm pr-2.5 pl-2.5 text-lg shadow-xs",
           "bg-neutral-950/5 shadow-neutral-950/15 dark:bg-neutral-50/5 dark:shadow-neutral-50/15",
           "focus:shadow-sm focus:shadow-neutral-950 focus:outline-none focus:dark:shadow-neutral-50",
           "hover:shadow-neutral-950 hover:dark:shadow-neutral-50",
@@ -73,3 +73,13 @@ type FieldControlProps = {
   required?: boolean;
   type: "email" | "password" | "text";
 };
+
+export function SubmitButton({ children }: PropsWithChildren): ReactNode {
+  return (
+    <RadixForm.Submit asChild>
+      <button className="mt-2.5 inline-flex h-9 w-full items-center justify-center rounded-sm bg-neutral-900 pr-4 pl-4 text-lg font-medium text-indigo-300 shadow-sm shadow-neutral-950/20 hover:bg-indigo-100 focus:shadow-neutral-950 focus:outline-none dark:bg-neutral-100 dark:text-indigo-900 dark:shadow-neutral-50/20 dark:hover:bg-indigo-900 dark:hover:text-indigo-100 dark:focus:shadow-neutral-50">
+        {children}
+      </button>
+    </RadixForm.Submit>
+  );
+}

@@ -8,6 +8,7 @@ import {
   FieldLabel,
   FieldMessage,
   Form,
+  SubmitButton,
 } from "~/components/Form";
 
 import type { Route } from "./+types/home";
@@ -69,6 +70,7 @@ function NewInstanceForm(): ReactNode {
         </FieldHeader>
         <FieldControl required type="password" />
       </Field>
+      <SubmitButton>Instantiate</SubmitButton>
     </Form>
   );
 }

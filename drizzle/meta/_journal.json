@@ -15,6 +15,13 @@
       "when": 1740355311223,
       "tag": "0001_majestic_iceman",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1747015664744,
+      "tag": "0002_classy_whistler",
+      "breakpoints": true
     }
   ]
 }

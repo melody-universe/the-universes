@@ -15,13 +15,6 @@ export default function Home(_: Route.ComponentProps): ReactNode {
   );
 }
 
-export function meta(_: Route.MetaArgs): Route.MetaDescriptors {
-  return [
-    { title: "The Universes" },
-    { content: "Welcome to our family website!", name: "description" },
-  ];
-}
-
 export async function loader({ context }: Route.LoaderArgs) {
   if (await usersApi(context).isNewInstance()) {
     return redirect("/new-instance");

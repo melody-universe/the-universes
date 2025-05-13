@@ -48,6 +48,13 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
+export function meta(_: Route.MetaArgs): Route.MetaDescriptors {
+  return [
+    { title: "The Universes" },
+    { content: "Welcome to our family website!", name: "description" },
+  ];
+}
+
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps): ReactNode {
   let message = "Oops!";
   let details = "An unexpected error occurred.";

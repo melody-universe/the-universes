@@ -17,6 +17,6 @@ export default function Home(_: Route.ComponentProps): ReactNode {
 
 export async function loader({ context }: Route.LoaderArgs) {
   if (await usersApi(context).isNewInstance()) {
-    return redirect("/new-instance");
+    return redirect("/admin/new-instance");
   }
 }

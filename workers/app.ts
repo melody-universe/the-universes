@@ -12,7 +12,6 @@ export default {
 } satisfies ExportedHandler<CloudflareEnvironment>;
 
 const requestHandler = createRequestHandler(
-  // @ts-expect-error - virtual module provided by React Router at build time
   () => import("virtual:react-router/server-build"),
   import.meta.env.MODE,
 );

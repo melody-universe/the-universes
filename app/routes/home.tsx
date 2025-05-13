@@ -1,15 +1,11 @@
 import type { ReactNode } from "react";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { getValidatedFormData, useRemixForm } from "remix-hook-form";
+import * as zod from "zod";
+
 import { usersApi } from "~/api/usersApi";
-import {
-  Field,
-  FieldControl,
-  FieldHeader,
-  FieldLabel,
-  FieldMessage,
-  Form,
-  SubmitButton,
-} from "~/components/Form";
+import { Field, Form, SubmitButton } from "~/components/Form";
 
 import type { Route } from "./+types/home";
 
@@ -23,7 +19,11 @@ export default function Home({
         <header className="flex flex-col items-center gap-9 text-4xl">
           The Universes
         </header>
-        {actionData ?? (loaderData.isNewInstance && <NewInstanceForm />)}
+        {(actionData?.errors ?? loaderData.isNewInstance) ? (
+          <NewInstanceForm />
+        ) : (
+          <p>More coming soon, we promise!</p>
+        )}
       </div>
     </main>
   );
@@ -40,43 +40,64 @@ export async function loader({ context }: Route.LoaderArgs) {
   return { isNewInstance: await usersApi(context).isNewInstance() };
 }
 
-export function action(_: Route.ActionArgs) {
-  return "Sorry, working on it!";
+export async function action({ context, request }: Route.ActionArgs) {
+  const { data, errors, receivedValues } = await getValidatedFormData<FormData>(
+    request,
+    resolver,
+  );
+
+  if (errors) {
+    return { defaultValues: receivedValues, errors };
+  }
+
+  await usersApi(context).create({
+    email: data.email,
+    isAdmin: true,
+    name: data.name,
+    password: data.password,
+  });
 }
 
+const schema = zod.object({
+  email: zod
+    .string()
+    .min(1, "Please enter your email")
+    .email("Please enter a valid email"),
+  name: zod.string().min(1, "Please enter your name"),
+  password: zod.string().min(1, "Please enter a password"),
+});
+
+type FormData = zod.infer<typeof schema>;
+
+const resolver = zodResolver(schema);
+
 function NewInstanceForm(): ReactNode {
+  const {
+    formState: { errors },
+    handleSubmit,
+    register,
+  } = useRemixForm<FormData>({ mode: "onSubmit", resolver });
+
   return (
-    <Form>
-      <Field name="name">
-        <FieldHeader>
-          <FieldLabel>Name</FieldLabel>
-          <FieldMessage match="valueMissing">
-            Please enter your name
-          </FieldMessage>
-        </FieldHeader>
-        <FieldControl required type="text" />
-      </Field>
-      <Field name="email">
-        <FieldHeader>
-          <FieldLabel>Email</FieldLabel>
-          <FieldMessage match="valueMissing">
-            Please enter your email
-          </FieldMessage>
-          <FieldMessage match="typeMismatch">
-            Please enter a valid email
-          </FieldMessage>
-        </FieldHeader>
-        <FieldControl required type="email" />
-      </Field>
-      <Field name="password">
-        <FieldHeader>
-          <FieldLabel>Password</FieldLabel>
-          <FieldMessage match="valueMissing">
-            Please enter a password
-          </FieldMessage>
-        </FieldHeader>
-        <FieldControl required type="password" />
-      </Field>
+    <Form onSubmit={handleSubmit}>
+      <Field
+        error={errors.name}
+        label="Name"
+        type="text"
+        {...register("name")}
+      />
+      <Field
+        error={errors.email}
+        label="Email"
+        type="email"
+        {...register("email")}
+      />
+      <Field
+        error={errors.password}
+        label="Password"
+        type="password"
+        {...register("password")}
+      />
       <SubmitButton>Instantiate</SubmitButton>
     </Form>
   );

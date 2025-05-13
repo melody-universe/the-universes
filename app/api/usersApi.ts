@@ -11,6 +11,7 @@ type UsersApi = {
 
 type CreateUserRequest = {
   email: string;
+  isAdmin: boolean;
   name: string;
   password: string;
 };
@@ -22,11 +23,12 @@ type CreateUserResponse = {
 export function usersApi({ db }: AppLoadContext): UsersApi {
   async function create({
     email,
+    isAdmin,
     name,
     password,
   }: CreateUserRequest): Promise<CreateUserResponse> {
     const passwordHash = await bcrypt.hash(password, 10);
-    await db.insert(users).values({ email, name, passwordHash });
+    await db.insert(users).values({ email, isAdmin, name, passwordHash });
     return { isSuccessful: true };
   }
 

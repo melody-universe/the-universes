@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
 
-import { Form, Outlet } from "react-router";
+import { Form, Outlet, redirect } from "react-router";
 
+import { usersApi } from "~/api/usersApi.server";
 import { SubmitButton } from "~/components/Form";
 import { getSession } from "~/sessions.server";
 
@@ -29,7 +30,22 @@ export default function Layout({
   );
 }
 
-export async function loader({ request }: Route.LoaderArgs) {
+export async function loader({ context, request }: Route.LoaderArgs) {
+  const { pathname } = new URL(request.url);
+
+  if (
+    (await usersApi(context).isNewInstance()) &&
+    pathname !== "/admin/new-instance"
+  ) {
+    return redirect("/admin/new-instance");
+  }
+
   const session = await getSession(request);
-  return { isLoggedIn: session.has("user") };
+  const isLoggedIn = session.has("user");
+
+  if (!isLoggedIn && pathname !== "/auth/login") {
+    return redirect("/auth/login");
+  }
+
+  return { isLoggedIn };
 }

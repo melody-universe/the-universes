@@ -58,9 +58,8 @@ export async function action({ context, request }: Route.ActionArgs) {
 
   if (result.isMatch) {
     const session = await getSession(request);
-    session.set("isAdmin", result.isAdmin);
-    session.set("userId", result.userId);
-    return redirect(result.isAdmin ? "/admin" : "/", {
+    session.set("user", result.user);
+    return redirect(result.user.isAdmin ? "/admin" : "/", {
       headers: { "Set-Cookie": await commitSession(session) },
     });
   } else {

@@ -17,7 +17,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
   }
 
   const session = await getSession(request);
-  if (!session.has("userId")) {
+  if (!session.has("user")) {
     return redirect("/auth/login");
   }
 }

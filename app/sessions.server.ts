@@ -1,8 +1,9 @@
 import { createCookieSessionStorage, type Session } from "react-router";
 
+import type { User } from "./api/usersApi.server";
+
 type SessionData = {
-  isAdmin: boolean;
-  userId: number;
+  user: User;
 };
 
 type SessionFlashData = {

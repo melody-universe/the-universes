@@ -1,9 +1,48 @@
 import type { AppLoadContext } from "react-router";
 
 import bcrypt from "bcryptjs";
-import { eq } from "drizzle-orm";
+import { eq, type InferSelectModel } from "drizzle-orm";
+
+import type { UnionFromTuple } from "~/types/UnionFromTuple";
 
 import { users } from "~/database/schema";
+
+export function usersApi({ db }: AppLoadContext): UsersApi {
+  async function create({
+    email,
+    isAdmin,
+    name,
+    password,
+  }: CreateUserRequest): Promise<CreateUserResponse> {
+    const passwordHash = await bcrypt.hash(password, 10);
+    await db.insert(users).values({ email, isAdmin, name, passwordHash });
+    return { isSuccessful: true };
+  }
+
+  async function isNewInstance(): Promise<boolean> {
+    return (await db.query.users.findFirst()) === undefined;
+  }
+
+  async function verifyCredentials({
+    email,
+    password,
+  }: VerifyCredentialsRequest): Promise<VerifyCredentialsResponse> {
+    const user = await db.query.users.findFirst({
+      where: eq(users.email, email),
+    });
+    if (!(user?.passwordHash && user.id)) {
+      return { isMatch: false };
+    }
+
+    if (await bcrypt.compare(password, user.passwordHash)) {
+      return { isMatch: true, user };
+    } else {
+      return { isMatch: false };
+    }
+  }
+
+  return { create, isNewInstance, verifyCredentials };
+}
 
 type UsersApi = {
   create(request: CreateUserRequest): Promise<CreateUserResponse>;
@@ -27,43 +66,11 @@ type CreateUserResponse = {
 type VerifyCredentialsRequest = { email: string; password: string };
 
 type VerifyCredentialsResponse =
-  | { isAdmin: boolean; isMatch: true; userId: number }
-  | { isMatch: false };
+  | { isMatch: false }
+  | { isMatch: true; user: User };
 
-export function usersApi({ db }: AppLoadContext): UsersApi {
-  async function create({
-    email,
-    isAdmin,
-    name,
-    password,
-  }: CreateUserRequest): Promise<CreateUserResponse> {
-    const passwordHash = await bcrypt.hash(password, 10);
-    await db.insert(users).values({ email, isAdmin, name, passwordHash });
-    return { isSuccessful: true };
-  }
+export type User = InferSelectModel<typeof users>;
 
-  async function isNewInstance(): Promise<boolean> {
-    return (await db.query.users.findFirst()) === undefined;
-  }
-
-  async function verifyCredentials({
-    email,
-    password,
-  }: VerifyCredentialsRequest): Promise<VerifyCredentialsResponse> {
-    const user = await db.query.users.findFirst({
-      columns: { id: true, isAdmin: true, passwordHash: true },
-      where: eq(users.email, email),
-    });
-    if (!(user?.passwordHash && user.id)) {
-      return { isMatch: false };
-    }
-
-    if (await bcrypt.compare(password, user.passwordHash)) {
-      return { isAdmin: !!user.isAdmin, isMatch: true, userId: user.id };
-    } else {
-      return { isMatch: false };
-    }
-  }
-
-  return { create, isNewInstance, verifyCredentials };
-}
+export type VerificationStatus = UnionFromTuple<
+  typeof users.verificationStatus.enumValues
+>;

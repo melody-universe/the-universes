@@ -7,7 +7,6 @@ import * as zod from "zod";
 
 import { usersApi } from "~/api/usersApi.server";
 import { Field, Form, SubmitButton } from "~/components/Form";
-import { PageLayout } from "~/components/PageLayout";
 
 import type { Route } from "./+types/new-instance";
 
@@ -22,29 +21,27 @@ export default function NewInstance(_: Route.ComponentProps): ReactNode {
   });
 
   return (
-    <PageLayout>
-      <Form errors={errors.root} onSubmit={handleSubmit}>
-        <Field
-          error={errors.name}
-          label="Name"
-          type="text"
-          {...register("name")}
-        />
-        <Field
-          error={errors.email}
-          label="Email"
-          type="email"
-          {...register("email")}
-        />
-        <Field
-          error={errors.password}
-          label="Password"
-          type="password"
-          {...register("password")}
-        />
-        <SubmitButton>Instantiate</SubmitButton>
-      </Form>
-    </PageLayout>
+    <Form errors={errors.root} onSubmit={handleSubmit}>
+      <Field
+        error={errors.name}
+        label="Name"
+        type="text"
+        {...register("name")}
+      />
+      <Field
+        error={errors.email}
+        label="Email"
+        type="email"
+        {...register("email")}
+      />
+      <Field
+        error={errors.password}
+        label="Password"
+        type="password"
+        {...register("password")}
+      />
+      <SubmitButton>Instantiate</SubmitButton>
+    </Form>
   );
 }
 

@@ -8,7 +8,6 @@ import * as zod from "zod";
 
 import { usersApi } from "~/api/usersApi.server";
 import { Field, Form, SubmitButton } from "~/components/Form";
-import { PageLayout } from "~/components/PageLayout";
 import { commitSession, getSession } from "~/sessions.server";
 
 import type { Route } from "./+types/login";
@@ -21,23 +20,21 @@ export default function Login(): ReactNode {
   } = useRemixForm<FormData>({ mode: "onSubmit", resolver });
 
   return (
-    <PageLayout>
-      <Form errors={errors.root} onSubmit={handleSubmit}>
-        <Field
-          error={errors.email}
-          label="Email"
-          type="email"
-          {...register("email")}
-        />
-        <Field
-          error={errors.password}
-          label="Password"
-          type="password"
-          {...register("password")}
-        />
-        <SubmitButton>Login</SubmitButton>
-      </Form>
-    </PageLayout>
+    <Form errors={errors.root} onSubmit={handleSubmit}>
+      <Field
+        error={errors.email}
+        label="Email"
+        type="email"
+        {...register("email")}
+      />
+      <Field
+        error={errors.password}
+        label="Password"
+        type="password"
+        {...register("password")}
+      />
+      <SubmitButton>Login</SubmitButton>
+    </Form>
   );
 }
 

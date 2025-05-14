@@ -3,17 +3,12 @@ import type { ReactNode } from "react";
 import { redirect } from "react-router";
 
 import { usersApi } from "~/api/usersApi.server";
-import { PageLayout } from "~/components/PageLayout";
 import { getSession } from "~/sessions.server";
 
 import type { Route } from "./+types/home";
 
 export default function Home(_: Route.ComponentProps): ReactNode {
-  return (
-    <PageLayout>
-      <p>More coming soon, we promise!</p>
-    </PageLayout>
-  );
+  return <p>More coming soon, we promise!</p>;
 }
 
 export async function loader({ context, request }: Route.LoaderArgs) {

@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import type { FieldErrors } from "react-hook-form";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { redirect } from "react-router";
@@ -8,28 +9,20 @@ import * as zod from "zod";
 import { usersApi } from "~/api/usersApi.server";
 import { Field, Form, SubmitButton } from "~/components/Form";
 import { PageLayout } from "~/components/PageLayout";
+import { commitSession, getSession } from "~/sessions.server";
 
-import type { Route } from "./+types/new-instance";
+import type { Route } from "./+types/login";
 
-export default function NewInstance(_: Route.ComponentProps): ReactNode {
+export default function Login(): ReactNode {
   const {
     formState: { errors },
     handleSubmit,
     register,
-  } = useRemixForm<FormData>({
-    mode: "onSubmit",
-    resolver,
-  });
+  } = useRemixForm<FormData>({ mode: "onSubmit", resolver });
 
   return (
     <PageLayout>
       <Form errors={errors.root} onSubmit={handleSubmit}>
-        <Field
-          error={errors.name}
-          label="Name"
-          type="text"
-          {...register("name")}
-        />
         <Field
           error={errors.email}
           label="Email"
@@ -42,14 +35,10 @@ export default function NewInstance(_: Route.ComponentProps): ReactNode {
           type="password"
           {...register("password")}
         />
-        <SubmitButton>Instantiate</SubmitButton>
+        <SubmitButton>Login</SubmitButton>
       </Form>
     </PageLayout>
   );
-}
-
-export async function loader({ context }: Route.LoaderArgs) {
-  return { isNewInstance: await usersApi(context).isNewInstance() };
 }
 
 export async function action({ context, request }: Route.ActionArgs) {
@@ -65,14 +54,25 @@ export async function action({ context, request }: Route.ActionArgs) {
     };
   }
 
-  await usersApi(context).create({
+  const userId = await usersApi(context).verifyCredentials({
     email: data.email,
-    isAdmin: true,
-    name: data.name,
     password: data.password,
   });
 
-  return redirect("/");
+  if (userId) {
+    const session = await getSession(request.headers.get("Cookie"));
+    session.set("userId", userId.toString());
+    return redirect("/", {
+      headers: { "Set-Cookie": await commitSession(session) },
+    });
+  } else {
+    return {
+      defaultValues: receivedValues,
+      errors: {
+        root: { noMatch: { message: "Invalid email / password" } },
+      } satisfies FieldErrors<FormData>,
+    };
+  }
 }
 
 const schema = zod.object({
@@ -80,7 +80,6 @@ const schema = zod.object({
     .string()
     .min(1, "Please enter your email")
     .email("Please enter a valid email"),
-  name: zod.string().min(1, "Please enter your name"),
   password: zod.string().min(1, "Please enter a password"),
 });
 

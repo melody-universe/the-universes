@@ -1,19 +1,30 @@
-import type {
-  ComponentProps,
-  FormEvent,
-  PropsWithChildren,
-  ReactNode,
-} from "react";
-import type { FieldError } from "react-hook-form";
+import type { FieldError, FieldErrors } from "react-hook-form";
 
 import { Form as RadixForm } from "radix-ui";
+import {
+  type ComponentProps,
+  type FormEvent,
+  type PropsWithChildren,
+  type ReactNode,
+  useMemo,
+} from "react";
 import { Form as ReactRouterForm } from "react-router";
 
-export function Form({ children, onSubmit }: FormProps): ReactNode {
+export function Form({ children, errors, onSubmit }: FormProps): ReactNode {
+  const errorItems = useMemo(
+    () =>
+      errors &&
+      Object.values(errors)
+        .map((error) => (typeof error === "object" ? error.message : undefined))
+        .filter((error) => !!error),
+    [errors],
+  );
+
   return (
     <RadixForm.Root asChild>
       {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
       <ReactRouterForm className="w-72" method="post" onSubmit={onSubmit}>
+        {errorItems?.map((message, i) => <span key={i}>{message}</span>)}
         {children}
       </ReactRouterForm>
     </RadixForm.Root>
@@ -21,6 +32,7 @@ export function Form({ children, onSubmit }: FormProps): ReactNode {
 }
 
 type FormProps = PropsWithChildren<{
+  errors: FieldErrors["root"];
   onSubmit: (event?: FormEvent<HTMLFormElement>) => Promise<void>;
 }>;
 

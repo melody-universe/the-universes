@@ -51,14 +51,15 @@ export async function action({ context, request }: Route.ActionArgs) {
     };
   }
 
-  const userId = await usersApi(context).verifyCredentials({
+  const result = await usersApi(context).verifyCredentials({
     email: data.email,
     password: data.password,
   });
 
-  if (userId) {
+  if (result.isMatch) {
     const session = await getSession(request);
-    session.set("userId", userId.toString());
+    session.set("isAdmin", result.isAdmin);
+    session.set("userId", result.userId);
     return redirect("/", {
       headers: { "Set-Cookie": await commitSession(session) },
     });

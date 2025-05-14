@@ -8,7 +8,9 @@ import { users } from "~/database/schema";
 type UsersApi = {
   create(request: CreateUserRequest): Promise<CreateUserResponse>;
   isNewInstance(): Promise<boolean>;
-  verifyCredentials(request: VerifyPasswordRequest): Promise<null | number>;
+  verifyCredentials(
+    request: VerifyCredentialsRequest,
+  ): Promise<VerifyCredentialsResponse>;
 };
 
 type CreateUserRequest = {
@@ -22,7 +24,11 @@ type CreateUserResponse = {
   isSuccessful: boolean;
 };
 
-type VerifyPasswordRequest = { email: string; password: string };
+type VerifyCredentialsRequest = { email: string; password: string };
+
+type VerifyCredentialsResponse =
+  | { isAdmin: boolean; isMatch: true; userId: number }
+  | { isMatch: false };
 
 export function usersApi({ db }: AppLoadContext): UsersApi {
   async function create({
@@ -43,19 +49,19 @@ export function usersApi({ db }: AppLoadContext): UsersApi {
   async function verifyCredentials({
     email,
     password,
-  }: VerifyPasswordRequest): Promise<null | number> {
+  }: VerifyCredentialsRequest): Promise<VerifyCredentialsResponse> {
     const user = await db.query.users.findFirst({
-      columns: { id: true, passwordHash: true },
+      columns: { id: true, isAdmin: true, passwordHash: true },
       where: eq(users.email, email),
     });
     if (!(user?.passwordHash && user.id)) {
-      return null;
+      return { isMatch: false };
     }
 
     if (await bcrypt.compare(password, user.passwordHash)) {
-      return user.id;
+      return { isAdmin: !!user.isAdmin, isMatch: true, userId: user.id };
     } else {
-      return null;
+      return { isMatch: false };
     }
   }
 

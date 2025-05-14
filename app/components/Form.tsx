@@ -10,6 +10,8 @@ import {
 } from "react";
 import { Form as ReactRouterForm } from "react-router";
 
+import { mergeClassNames } from "~/utils/mergeClassNames";
+
 export function Form({ children, errors, onSubmit }: FormProps): ReactNode {
   const errorItems = useMemo(
     () =>
@@ -77,12 +79,22 @@ type FieldProps = Omit<ComponentProps<"input">, "children" | "type"> & {
   type: "email" | "password" | "text";
 };
 
-export function SubmitButton({ children }: PropsWithChildren): ReactNode {
+export function SubmitButton({
+  children,
+  className,
+}: SubmitButtonProps): ReactNode {
   return (
     <RadixForm.Submit asChild>
-      <button className="mt-2.5 inline-flex h-9 w-full items-center justify-center rounded-sm bg-neutral-900 pr-4 pl-4 text-lg font-medium text-indigo-300 shadow-sm shadow-neutral-950/20 hover:bg-indigo-100 focus:shadow-neutral-950 focus:outline-none dark:bg-neutral-100 dark:text-indigo-900 dark:shadow-neutral-50/20 dark:hover:bg-indigo-900 dark:hover:text-indigo-100 dark:focus:shadow-neutral-50">
+      <button
+        className={mergeClassNames(
+          "mt-2.5 inline-flex h-9 w-full items-center justify-center rounded-sm bg-neutral-900 pr-4 pl-4 text-lg font-medium text-indigo-300 shadow-sm shadow-neutral-950/20 hover:bg-indigo-100 focus:shadow-neutral-950 focus:outline-none dark:bg-neutral-100 dark:text-indigo-900 dark:shadow-neutral-50/20 dark:hover:bg-indigo-900 dark:hover:text-indigo-100 dark:focus:shadow-neutral-50",
+          className,
+        )}
+      >
         {children}
       </button>
     </RadixForm.Submit>
   );
 }
+
+type SubmitButtonProps = PropsWithChildren<{ className?: string }>;

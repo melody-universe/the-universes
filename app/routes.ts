@@ -12,6 +12,9 @@ export default [
     ...prefix("/admin", [
       route("/new-instance", "./routes/admin/new-instance.tsx"),
     ]),
-    ...prefix("/auth", [route("/login", "./routes/auth/login.tsx")]),
+    ...prefix("/auth", [
+      route("/login", "./routes/auth/login.tsx"),
+      route("/logout", "./routes/auth/logout.tsx"),
+    ]),
   ]),
 ] satisfies RouteConfig;

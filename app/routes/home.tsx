@@ -16,7 +16,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
     return redirect("/admin/new-instance");
   }
 
-  const session = await getSession(request.headers.get("Cookie"));
+  const session = await getSession(request);
   if (!session.has("userId")) {
     return redirect("/auth/login");
   }

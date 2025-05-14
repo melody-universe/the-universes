@@ -30,6 +30,6 @@ export default function Layout({
 }
 
 export async function loader({ request }: Route.LoaderArgs) {
-  const session = await getSession(request.headers.get("Cookie"));
+  const session = await getSession(request);
   return { isLoggedIn: session.has("userId") };
 }

@@ -57,7 +57,7 @@ export async function action({ context, request }: Route.ActionArgs) {
   });
 
   if (userId) {
-    const session = await getSession(request.headers.get("Cookie"));
+    const session = await getSession(request);
     session.set("userId", userId.toString());
     return redirect("/", {
       headers: { "Set-Cookie": await commitSession(session) },

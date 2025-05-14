@@ -1,0 +1,1 @@
+ALTER TABLE `users` ADD `verificationStatus` text DEFAULT 'pending-email-verification' NOT NULL;

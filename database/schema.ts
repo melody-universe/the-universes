@@ -7,4 +7,13 @@ export const users = sqliteTable("users", {
   isAdmin: integer({ mode: "boolean" }).default(false),
   name: text().notNull(),
   passwordHash: text(),
+  verificationStatus: text({
+    enum: [
+      "pending-email-verification",
+      "pending-admin-verification",
+      "verified",
+    ],
+  })
+    .notNull()
+    .default("pending-email-verification"),
 });

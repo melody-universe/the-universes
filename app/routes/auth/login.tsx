@@ -60,7 +60,7 @@ export async function action({ context, request }: Route.ActionArgs) {
     const session = await getSession(request);
     session.set("isAdmin", result.isAdmin);
     session.set("userId", result.userId);
-    return redirect("/", {
+    return redirect(result.isAdmin ? "/admin" : "/", {
       headers: { "Set-Cookie": await commitSession(session) },
     });
   } else {

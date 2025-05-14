@@ -10,7 +10,7 @@ import { Field, Form, SubmitButton } from "~/components/Form";
 
 import type { Route } from "./+types/new-instance";
 
-export default function NewInstance(_: Route.ComponentProps): ReactNode {
+export default function NewInstance(): ReactNode {
   const {
     formState: { errors },
     handleSubmit,
@@ -46,7 +46,9 @@ export default function NewInstance(_: Route.ComponentProps): ReactNode {
 }
 
 export async function loader({ context }: Route.LoaderArgs) {
-  return { isNewInstance: await usersApi(context).isNewInstance() };
+  if (!(await usersApi(context).isNewInstance())) {
+    return redirect("/");
+  }
 }
 
 export async function action({ context, request }: Route.ActionArgs) {

@@ -10,6 +10,7 @@ export default [
   layout("./routes/layout.tsx", [
     index("./routes/home.tsx"),
     ...prefix("/admin", [
+      index("./routes/admin/admin.tsx"),
       route("/new-instance", "./routes/admin/new-instance.tsx"),
     ]),
     ...prefix("/auth", [

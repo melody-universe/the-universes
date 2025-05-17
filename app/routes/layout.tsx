@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import { Form, Outlet, redirect } from "react-router";
+import { Form, Link, Outlet, redirect } from "react-router";
 
 import { instanceApi } from "~/api/instanceApi.server";
 import { SubmitButton } from "~/components/Form";
@@ -16,7 +16,7 @@ export default function Layout({
       <div className="flex min-h-0 flex-1 flex-col items-center gap-8">
         <div className="flex w-full items-baseline pr-4">
           <header className="flex grow flex-col items-center gap-9 text-4xl">
-            The Universes
+            <Link to="/">The Universes</Link>
           </header>
           {loaderData?.isLoggedIn && (
             <Form action="/auth/logout" method="post">

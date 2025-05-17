@@ -44,8 +44,8 @@ export async function loader({ context, request }: Route.LoaderArgs) {
   const session = await getSession(request);
   const isLoggedIn = session.has("user");
 
-  if (!isLoggedIn && pathname !== "/auth/login") {
-    return redirect("/auth/login");
+  if (!isLoggedIn && pathname !== "/auth") {
+    return redirect("/auth");
   }
 
   return { isLoggedIn };

@@ -13,7 +13,12 @@ import { Form as ReactRouterForm } from "react-router";
 import { mergeClassNames } from "~/utils/mergeClassNames";
 import { prefixClassName } from "~/utils/prefixClassName";
 
-export function Form({ children, errors, onSubmit }: FormProps): ReactNode {
+export function Form({
+  action,
+  children,
+  errors,
+  onSubmit,
+}: FormProps): ReactNode {
   const errorItems = useMemo(
     () =>
       errors &&
@@ -25,8 +30,13 @@ export function Form({ children, errors, onSubmit }: FormProps): ReactNode {
 
   return (
     <RadixForm.Root asChild>
-      {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
-      <ReactRouterForm className="w-72" method="post" onSubmit={onSubmit}>
+      <ReactRouterForm
+        action={action}
+        className="w-72"
+        method="post"
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        onSubmit={onSubmit}
+      >
         {errorItems?.map((message, i) => <span key={i}>{message}</span>)}
         {children}
       </ReactRouterForm>
@@ -35,6 +45,7 @@ export function Form({ children, errors, onSubmit }: FormProps): ReactNode {
 }
 
 type FormProps = PropsWithChildren<{
+  action?: string;
   errors: FieldErrors["root"];
   onSubmit: (event?: FormEvent<HTMLFormElement>) => Promise<void>;
 }>;

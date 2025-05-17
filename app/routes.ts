@@ -15,6 +15,7 @@ export default [
       route("/reset-instance", "./routes/admin/reset-instance.ts"),
     ]),
     ...prefix("/auth", [
+      index("./routes/auth/auth.tsx"),
       route("/login", "./routes/auth/login.tsx"),
       route("/logout", "./routes/auth/logout.ts"),
     ]),

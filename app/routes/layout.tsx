@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 
 import { Form, Outlet, redirect } from "react-router";
 
-import { usersApi } from "~/api/usersApi.server";
+import { instanceApi } from "~/api/instanceApi.server";
 import { SubmitButton } from "~/components/Form";
 import { getSession } from "~/sessions.server";
 
@@ -33,7 +33,7 @@ export default function Layout({
 export async function loader({ context, request }: Route.LoaderArgs) {
   const { pathname } = new URL(request.url);
 
-  if (await usersApi(context).isNewInstance()) {
+  if (await instanceApi(context).isNewInstance()) {
     if (pathname === "/admin/new-instance") {
       return;
     } else {

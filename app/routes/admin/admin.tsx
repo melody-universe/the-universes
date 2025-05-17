@@ -1,20 +1,21 @@
 import type { ReactNode } from "react";
 
-import { data } from "react-router";
+import { Form } from "react-router";
 
-import { getSession } from "~/sessions.server";
+import { SubmitButton } from "~/components/Form";
 
 import type { Route } from "./+types/admin";
 
+import { assertUserIsAdmin } from "./utils/assertUserIsAdmin";
+
 export default function Admin(): ReactNode {
-  return <p>Welcome, admin!</p>;
+  return (
+    <Form action="/admin/reset-instance" method="post">
+      <SubmitButton variant="destructive">Reset </SubmitButton>
+    </Form>
+  );
 }
 
 export async function loader({ request }: Route.LoaderArgs) {
-  const session = await getSession(request);
-  const user = session.get("user");
-  if (!user?.isAdmin) {
-    // eslint-disable-next-line @typescript-eslint/only-throw-error
-    throw data("User is not an admin", { status: 404 });
-  }
+  await assertUserIsAdmin(request);
 }

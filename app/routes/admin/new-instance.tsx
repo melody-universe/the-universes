@@ -5,8 +5,10 @@ import { redirect } from "react-router";
 import { getValidatedFormData, useRemixForm } from "remix-hook-form";
 import * as zod from "zod";
 
+import { instanceApi } from "~/api/instanceApi.server";
 import { usersApi } from "~/api/usersApi.server";
 import { Field, Form, SubmitButton } from "~/components/Form";
+import { commitSession, getSession } from "~/sessions.server";
 
 import type { Route } from "./+types/new-instance";
 
@@ -46,7 +48,7 @@ export default function NewInstance(): ReactNode {
 }
 
 export async function loader({ context }: Route.LoaderArgs) {
-  if (!(await usersApi(context).isNewInstance())) {
+  if (!(await instanceApi(context).isNewInstance())) {
     return redirect("/");
   }
 }
@@ -64,14 +66,18 @@ export async function action({ context, request }: Route.ActionArgs) {
     };
   }
 
-  await usersApi(context).create({
+  const result = await usersApi(context).create({
     email: data.email,
     isAdmin: true,
     name: data.name,
     password: data.password,
   });
 
-  return redirect("/");
+  const session = await getSession(request);
+  session.set("user", result.user);
+  return redirect(result.user.isAdmin ? "/admin" : "/", {
+    headers: { "Set-Cookie": await commitSession(session) },
+  });
 }
 
 const schema = zod.object({

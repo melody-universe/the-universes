@@ -15,12 +15,11 @@ export function usersApi({ db }: AppLoadContext): UsersApi {
     password,
   }: CreateUserRequest): Promise<CreateUserResponse> {
     const passwordHash = await bcrypt.hash(password, 10);
-    await db.insert(users).values({ email, isAdmin, name, passwordHash });
-    return { isSuccessful: true };
-  }
-
-  async function isNewInstance(): Promise<boolean> {
-    return (await db.query.users.findFirst()) === undefined;
+    const response = await db
+      .insert(users)
+      .values({ email, isAdmin, name, passwordHash })
+      .returning();
+    return { user: response[0] };
   }
 
   async function verifyCredentials({
@@ -41,12 +40,11 @@ export function usersApi({ db }: AppLoadContext): UsersApi {
     }
   }
 
-  return { create, isNewInstance, verifyCredentials };
+  return { create, verifyCredentials };
 }
 
 type UsersApi = {
   create(request: CreateUserRequest): Promise<CreateUserResponse>;
-  isNewInstance(): Promise<boolean>;
   verifyCredentials(
     request: VerifyCredentialsRequest,
   ): Promise<VerifyCredentialsResponse>;
@@ -60,7 +58,7 @@ type CreateUserRequest = {
 };
 
 type CreateUserResponse = {
-  isSuccessful: boolean;
+  user: User;
 };
 
 type VerifyCredentialsRequest = { email: string; password: string };

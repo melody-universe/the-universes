@@ -83,16 +83,25 @@ type FieldProps = Omit<ComponentProps<"input">, "children" | "type"> & {
 export function SubmitButton({
   children,
   className,
+  variant,
 }: SubmitButtonProps): ReactNode {
   return (
     <RadixForm.Submit asChild>
       <button
         className={mergeClassNames(
           "mt-2.5 inline-flex h-9 w-full items-center justify-center rounded-sm pr-4 pl-4 text-lg font-medium shadow-sm focus:outline-none",
-          "bg-neutral-900 text-indigo-300 shadow-neutral-950/20 hover:bg-indigo-100 focus:shadow-neutral-950",
+          "shadow-neutral-950/20 focus:shadow-neutral-950",
+          variant === "destructive"
+            ? "bg-red-900 text-red-300 hover:bg-red-100 hover:text-red-900"
+            : "bg-neutral-900 text-indigo-300 hover:bg-indigo-100 hover:text-indigo-900",
           prefixClassName(
             "dark:",
-            "bg-neutral-100 text-indigo-900 shadow-neutral-50/20 hover:bg-indigo-900 hover:text-indigo-100 focus:shadow-neutral-50",
+            mergeClassNames(
+              "shadow-neutral-50/20 focus:shadow-neutral-50",
+              variant === "destructive"
+                ? "bg-red-100 text-red-900 hover:bg-red-900 hover:text-red-100"
+                : "bg-neutral-100 text-indigo-900 hover:bg-indigo-900 hover:text-indigo-100",
+            ),
           ),
           className,
         )}
@@ -103,4 +112,7 @@ export function SubmitButton({
   );
 }
 
-type SubmitButtonProps = PropsWithChildren<{ className?: string }>;
+type SubmitButtonProps = PropsWithChildren<{
+  className?: string;
+  variant?: "destructive";
+}>;

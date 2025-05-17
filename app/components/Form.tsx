@@ -11,6 +11,7 @@ import {
 import { Form as ReactRouterForm } from "react-router";
 
 import { mergeClassNames } from "~/utils/mergeClassNames";
+import { prefixClassName } from "~/utils/prefixClassName";
 
 export function Form({ children, errors, onSubmit }: FormProps): ReactNode {
   const errorItems = useMemo(
@@ -87,7 +88,12 @@ export function SubmitButton({
     <RadixForm.Submit asChild>
       <button
         className={mergeClassNames(
-          "mt-2.5 inline-flex h-9 w-full items-center justify-center rounded-sm bg-neutral-900 pr-4 pl-4 text-lg font-medium text-indigo-300 shadow-sm shadow-neutral-950/20 hover:bg-indigo-100 focus:shadow-neutral-950 focus:outline-none dark:bg-neutral-100 dark:text-indigo-900 dark:shadow-neutral-50/20 dark:hover:bg-indigo-900 dark:hover:text-indigo-100 dark:focus:shadow-neutral-50",
+          "mt-2.5 inline-flex h-9 w-full items-center justify-center rounded-sm pr-4 pl-4 text-lg font-medium shadow-sm focus:outline-none",
+          "bg-neutral-900 text-indigo-300 shadow-neutral-950/20 hover:bg-indigo-100 focus:shadow-neutral-950",
+          prefixClassName(
+            "dark:",
+            "bg-neutral-100 text-indigo-900 shadow-neutral-50/20 hover:bg-indigo-900 hover:text-indigo-100 focus:shadow-neutral-50",
+          ),
           className,
         )}
       >

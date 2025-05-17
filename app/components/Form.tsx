@@ -11,7 +11,6 @@ import {
 import { Form as ReactRouterForm } from "react-router";
 
 import { mergeClassNames } from "~/utils/mergeClassNames";
-import { prefixClassName } from "~/utils/prefixClassName";
 
 export function Form({
   action,
@@ -105,15 +104,10 @@ export function SubmitButton({
           variant === "destructive"
             ? "bg-red-900 text-red-300 hover:bg-red-100 hover:text-red-900"
             : "bg-neutral-900 text-indigo-300 hover:bg-indigo-100 hover:text-indigo-900",
-          prefixClassName(
-            "dark:",
-            mergeClassNames(
-              "shadow-neutral-50/20 focus:shadow-neutral-50",
-              variant === "destructive"
-                ? "bg-red-100 text-red-900 hover:bg-red-900 hover:text-red-100"
-                : "bg-neutral-100 text-indigo-900 hover:bg-indigo-900 hover:text-indigo-100",
-            ),
-          ),
+          "dark:shadow-neutral-50/20 dark:focus:shadow-neutral-50",
+          variant === "destructive"
+            ? "dark:bg-red-100 dark:text-red-900 dark:hover:bg-red-900 dark:hover:text-red-100"
+            : "dark:bg-neutral-100 dark:text-indigo-900 dark:hover:bg-indigo-900 dark:hover:text-indigo-100",
           className,
         )}
       >

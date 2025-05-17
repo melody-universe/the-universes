@@ -3,7 +3,6 @@ import type { PropsWithChildren, ReactNode } from "react";
 import { Tabs as RadixTabs } from "radix-ui";
 
 import { mergeClassNames } from "~/utils/mergeClassNames";
-import { prefixClassName } from "~/utils/prefixClassName";
 
 export function Tabs({
   children,
@@ -42,21 +41,10 @@ export function TabsTrigger({
       className={mergeClassNames(
         "flex h-12 flex-1 cursor-pointer items-center justify-center px-5 text-lg leading-none outline-none select-none first:rounded-tl-md last:rounded-tr-md",
         "bg-neutral-100/80 text-indigo-900 hover:text-indigo-800",
-        prefixClassName(
-          "data-[state=active]:",
-          mergeClassNames(
-            "inset-shadow-2xs shadow-current focus:relative focus:shadow-xs",
-            "text-indigo-800 focus:shadow-neutral-900",
-            prefixClassName(
-              "dark:",
-              "text-indigo-200 focus:shadow-neutral-100",
-            ),
-          ),
-        ),
-        prefixClassName(
-          "dark:",
-          "bg-neutral-900/80 text-indigo-100 hover:text-indigo-200",
-        ),
+        "dark:bg-neutral-900/80 dark:text-indigo-100 dark:hover:text-indigo-200",
+        "data-[state=active]:inset-shadow-2xs data-[state=active]:shadow-current data-[state=active]:focus:relative data-[state=active]:focus:shadow-xs",
+        "data-[state=active]:text-indigo-800 data-[state=active]:focus:shadow-neutral-900",
+        "data-[state=active]:dark:text-indigo-200 data-[state=active]:dark:focus:shadow-neutral-100",
       )}
       value={value}
     >

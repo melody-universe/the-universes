@@ -18,7 +18,7 @@ export default function Layout({
           <header className="flex grow flex-col items-center gap-9 text-4xl">
             The Universes
           </header>
-          {loaderData.isLoggedIn && (
+          {loaderData?.isLoggedIn && (
             <Form action="/auth/logout" method="post">
               <SubmitButton className="max-w-30">Log out</SubmitButton>
             </Form>
@@ -33,11 +33,12 @@ export default function Layout({
 export async function loader({ context, request }: Route.LoaderArgs) {
   const { pathname } = new URL(request.url);
 
-  if (
-    (await usersApi(context).isNewInstance()) &&
-    pathname !== "/admin/new-instance"
-  ) {
-    return redirect("/admin/new-instance");
+  if (await usersApi(context).isNewInstance()) {
+    if (pathname === "/admin/new-instance") {
+      return;
+    } else {
+      return redirect("/admin/new-instance");
+    }
   }
 
   const session = await getSession(request);

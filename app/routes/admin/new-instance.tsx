@@ -8,9 +8,11 @@ import * as zod from "zod";
 import { instanceApi } from "~/api/instanceApi.server";
 import { usersApi } from "~/api/usersApi.server";
 import { Field, Form, SubmitButton } from "~/components/Form";
-import { commitSession, getSession } from "~/sessions.server";
 
 import type { Route } from "./+types/new-instance";
+
+import { email, name, password } from "../utils/fields";
+import { startSessionAndRedirect } from "../utils/startSessionAndRedirect";
 
 export default function NewInstance(): ReactNode {
   const {
@@ -66,27 +68,19 @@ export async function action({ context, request }: Route.ActionArgs) {
     };
   }
 
-  const result = await usersApi(context).create({
+  const result = await usersApi(context).createAdmin({
     email: data.email,
-    isAdmin: true,
     name: data.name,
     password: data.password,
   });
 
-  const session = await getSession(request);
-  session.set("user", result.user);
-  return redirect(result.user.isAdmin ? "/admin" : "/", {
-    headers: { "Set-Cookie": await commitSession(session) },
-  });
+  return startSessionAndRedirect(request, result.user);
 }
 
 const schema = zod.object({
-  email: zod
-    .string()
-    .min(1, "Please enter your email")
-    .email("Please enter a valid email"),
-  name: zod.string().min(1, "Please enter your name"),
-  password: zod.string().min(1, "Please enter a password"),
+  email,
+  name,
+  password,
 });
 
 type FormData = zod.infer<typeof schema>;

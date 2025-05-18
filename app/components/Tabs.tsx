@@ -7,16 +7,29 @@ import { mergeClassNames } from "~/utils/mergeClassNames";
 export function Tabs({
   children,
   defaultValue,
-}: PropsWithChildren<{ defaultValue?: string }>): ReactNode {
+  onValueChange,
+  value,
+}: TabsProps): ReactNode {
   return (
     <RadixTabs.Root
       className="flex w-sm flex-col shadow-md text-shadow-neutral-900/50 dark:text-shadow-neutral-100/50"
       defaultValue={defaultValue}
+      onValueChange={onValueChange}
+      value={value}
     >
       {children}
     </RadixTabs.Root>
   );
 }
+
+type TabsProps = PropsWithChildren<
+  | {
+      defaultValue?: never;
+      onValueChange: (value: string) => void;
+      value: string;
+    }
+  | { defaultValue?: string; onValueChange?: never; value?: never }
+>;
 
 export function TabsList({
   children,

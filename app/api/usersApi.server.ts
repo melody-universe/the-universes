@@ -8,16 +8,28 @@ import type { UnionFromTuple } from "~/types/UnionFromTuple";
 import { users } from "~/database/schema";
 
 export function usersApi({ db }: AppLoadContext): UsersApi {
-  async function create({
+  async function createAdmin({
     email,
-    isAdmin,
+    name,
+    password,
+  }: CreateAdminRequest): Promise<CreateAdminResponse> {
+    const passwordHash = await bcrypt.hash(password, 10);
+    const response = await db
+      .insert(users)
+      .values({ email, isAdmin: true, name, passwordHash })
+      .returning();
+    return { user: response[0] };
+  }
+
+  async function createUser({
+    email,
     name,
     password,
   }: CreateUserRequest): Promise<CreateUserResponse> {
     const passwordHash = await bcrypt.hash(password, 10);
     const response = await db
       .insert(users)
-      .values({ email, isAdmin, name, passwordHash })
+      .values({ email, name, passwordHash })
       .returning();
     return { user: response[0] };
   }
@@ -40,26 +52,30 @@ export function usersApi({ db }: AppLoadContext): UsersApi {
     }
   }
 
-  return { create, verifyCredentials };
+  return { createAdmin, createUser, verifyCredentials };
 }
 
 type UsersApi = {
-  create(request: CreateUserRequest): Promise<CreateUserResponse>;
+  createAdmin(request: CreateAdminRequest): Promise<CreateAdminResponse>;
+  createUser(request: CreateUserRequest): Promise<CreateUserResponse>;
   verifyCredentials(
     request: VerifyCredentialsRequest,
   ): Promise<VerifyCredentialsResponse>;
 };
 
-type CreateUserRequest = {
+type CreateAdminRequest = {
   email: string;
-  isAdmin: boolean;
   name: string;
   password: string;
 };
 
-type CreateUserResponse = {
+type CreateAdminResponse = {
   user: User;
 };
+
+type CreateUserRequest = CreateAdminRequest;
+
+type CreateUserResponse = CreateAdminResponse;
 
 type VerifyCredentialsRequest = { email: string; password: string };
 

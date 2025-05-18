@@ -16,27 +16,20 @@ export function Form({
   action,
   children,
   errors,
+  omitRootErrors,
   onSubmit,
+  unstyled,
 }: FormProps): ReactNode {
-  const errorItems = useMemo(
-    () =>
-      errors &&
-      Object.values(errors)
-        .map((error) => (typeof error === "object" ? error.message : undefined))
-        .filter((error) => !!error),
-    [errors],
-  );
-
   return (
     <RadixForm.Root asChild>
       <ReactRouterForm
         action={action}
-        className="w-72"
+        className={unstyled ? undefined : "w-72"}
         method="post"
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onSubmit={onSubmit}
       >
-        {errorItems?.map((message, i) => <span key={i}>{message}</span>)}
+        {!omitRootErrors && <FormErrors errors={errors} />}
         {children}
       </ReactRouterForm>
     </RadixForm.Root>
@@ -46,8 +39,27 @@ export function Form({
 type FormProps = PropsWithChildren<{
   action?: string;
   errors: FieldErrors["root"];
-  onSubmit: (event?: FormEvent<HTMLFormElement>) => Promise<void>;
+  omitRootErrors?: boolean;
+  onSubmit: (event?: FormEvent<HTMLFormElement>) => Promise<void> | void;
+  unstyled?: boolean;
 }>;
+
+export function FormErrors({
+  errors,
+}: {
+  errors: FieldErrors["root"] | undefined;
+}): ReactNode {
+  const errorItems = useMemo(
+    () =>
+      errors &&
+      Object.values(errors)
+        .map((error) => (typeof error === "object" ? error.message : undefined))
+        .filter((error) => !!error),
+    [errors],
+  );
+
+  return errorItems?.map((message, i) => <span key={i}>{message}</span>);
+}
 
 export function Field({
   error,
